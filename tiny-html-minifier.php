@@ -134,7 +134,6 @@ class TinyHtmlMinifier {
         foreach($rows as $part) {
             $html .= trim($part) . "\n";
         }
-        //$html = str_replace(" </", "</", $html);
         return $html;
     }
 

@@ -2,6 +2,7 @@
 class TinyHtmlMinifier {
     function __construct() {
         $this->elements_compact = $this->elementsAsCompact();
+        $this->elements_space = $this->elementsAsSpace();
         $this->elements_rows = $this->elementsAsRows();
     }
 
@@ -38,14 +39,23 @@ class TinyHtmlMinifier {
 
     // Minify
     function minifyHtml($name, $element) {
-        if($name == '')
+        if($name == '') {
             return trim($element);
-        elseif($this->isElementClosed($name) || $this->isElementCompact($name))
-            return $this->minifySpace($element);
-        elseif($this->isComment($name)) {
-            return $this->removeComment($element);
-        } elseif($this->isStyle($name))
+        } elseif($this->isElementClosed($name)) {
+            $nicename = substr($name, 1);
+            if($this->isElementCompact($nicename)) {
+                return $this->minifyCompact($element);
+            } elseif($this->isElementSpace($nicename)) {
+                return $this->minifySpace($element);
+            } elseif($this->isElementRow($nicename)) {
+                return $this->minifyRows($element);
+            }
+        } elseif($this->isElementCompact($name)) {
             return $this->minifyCompact($element);
+        } elseif($this->isComment($name)) {
+            return $this->removeComment($element);
+        } elseif($this->isElementSpace($name))
+            return $this->minifySpace($element);
         elseif($this->isElementRow($name)) {
             return $element;
         } else
@@ -79,6 +89,11 @@ class TinyHtmlMinifier {
         return (in_array($name, $this->elements_compact)) ? true : false;
     }
 
+     // Is element space
+     function isElementSpace($name) {
+        return (in_array($name, $this->elements_space)) ? true : false;
+    }
+
     // Is element row
     function isElementRow($name) {
         return (in_array($name, $this->elements_rows)) ? true : false;
@@ -104,7 +119,7 @@ class TinyHtmlMinifier {
     function minifyCompact($element) {
         $element = preg_replace('!\s+!', ' ', $element);
         $element = str_replace("> ", ">", $element);
-        return $element;
+        return trim($element);
     }
 
     // Minify but keep one space
@@ -119,12 +134,14 @@ class TinyHtmlMinifier {
         foreach($rows as $part) {
             $html .= trim($part) . "\n";
         }
+        //$html = str_replace(" </", "</", $html);
         return $html;
     }
 
     // Elements to array
     function elementsToArray($elements) {
-        return explode(',', str_replace(["\n", "\r", " "], ["", "", ""], $elements));
+        $trim = str_replace(["\n", "\r", " "], ["", "", ""], $elements);
+        return explode(',', $trim);
     }
 
     // Elements as rows
@@ -136,8 +153,7 @@ class TinyHtmlMinifier {
         return $this->elementsToArray($elements);
     }
 
-    // Elements as compact
-    function elementsAsCompact() {
+    function elementsAsSpace() {
         $elements = '
             !doctype,
             a, abbr, area, article, aside, audio,
@@ -149,7 +165,7 @@ class TinyHtmlMinifier {
             h1, h2, h3, h4, h5, h6,
             hr, head, header, html,
             i, img,
-            li, link,
+            li,
             main, mark, menu, menuitem, meta, meter,
             nav, noscript,
             object, ol, optgroup, option, output,
@@ -160,6 +176,19 @@ class TinyHtmlMinifier {
             table, tbody, td, tfoot, th, thead, time, title, tr, track,
             u, ul,
             var, vbr, video,
+        ';
+
+        return $this->elementsToArray($elements);
+    }
+
+    // Elements as compact
+    function elementsAsCompact() {
+        $elements = '
+            !doctype, body, head, html, meta, title, link,
+        ';
+
+        $elements .= '
+            style,
         ';
 
         $elements .= '

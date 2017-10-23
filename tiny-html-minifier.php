@@ -1,9 +1,9 @@
 <?php
 class TinyHtmlMinifier {
     function __construct() {
-        $this->elements_compact = $this->elementsAsCompact();
-        $this->elements_space = $this->elementsAsSpace();
-        $this->elements_rows = $this->elementsAsRows();
+        $this->elements = $this->elements();
+        $this->elementsSkipSpace = $this->elementsSkipSpace();
+        $this->elementsSkipAll = $this->elementsSkipAll();
     }
 
     // Minify
@@ -39,27 +39,14 @@ class TinyHtmlMinifier {
 
     // Minify
     function minifyHtml($name, $element) {
-        if($name == '') {
-            return trim($element);
-        } elseif($this->isElementClosed($name)) {
-            $nicename = substr($name, 1);
-            if($this->isElementCompact($nicename)) {
-                return $this->minifyCompact($element);
-            } elseif($this->isElementSpace($nicename)) {
-                return $this->minifySpace($element);
-            } elseif($this->isElementRow($nicename)) {
-                return $this->minifyRows($element);
-            }
-        } elseif($this->isElementCompact($name)) {
-            return $this->minifyCompact($element);
-        } elseif($this->isComment($name)) {
-            return $this->removeComment($element);
-        } elseif($this->isElementSpace($name))
-            return $this->minifySpace($element);
-        elseif($this->isElementRow($name)) {
-            return $element;
-        } else
-            return $this->minifyRows($element);
+        // No name
+        if($name == '') {                               return trim($element);
+        } elseif($this->isElementClosed($name)) {       return $this->minifyElementClosed($name, $element);
+        } elseif($this->isElement($name)) {             return $this->strip($element);
+        } elseif($this->isComment($name)) {             return $this->removeComment($element);
+        } elseif($this->isElementSkipSpace($name)) {    return $this->stripSkipSpace($element);
+        } elseif($this->isElementSkipAll($name)) {      return $element;
+        } else {                                        return $this->stripSkipNewlines($element); }
     }
 
     // Is comment
@@ -71,7 +58,7 @@ class TinyHtmlMinifier {
     function removeComment($element) {
         $position = strpos($element, '-->');
         $element = substr($element, $position + 3);
-        return $this->minifySpace($element);
+        return $this->stripSkipSpace($element);
     }
 
     // Is style
@@ -84,19 +71,19 @@ class TinyHtmlMinifier {
         return (substr($name, 0, 1) == '/') ? true : false;
     }
 
-    // Is element compact
-    function isElementCompact($name) {
-        return (in_array($name, $this->elements_compact)) ? true : false;
+    // Is element
+    function isElement($name) {
+        return (in_array($name, $this->elements)) ? true : false;
     }
 
      // Is element space
-     function isElementSpace($name) {
-        return (in_array($name, $this->elements_space)) ? true : false;
+     function isElementSkipSpace($name) {
+        return (in_array($name, $this->elementsSkipSpace)) ? true : false;
     }
 
-    // Is element row
-    function isElementRow($name) {
-        return (in_array($name, $this->elements_rows)) ? true : false;
+    // Is element skip all
+    function isElementSkipAll($name) {
+        return (in_array($name, $this->elementsSkipAll)) ? true : false;
     }
 
     // Get name from element
@@ -115,20 +102,52 @@ class TinyHtmlMinifier {
         return $split;
     }
 
+    // Name to nicename
+    function nicename($name) {
+        $nicename = substr($name, 1);
+        return $nicename;
+    }
+
+    /* Minify */
+
+    // Minify closed element
+    function minifyClosedElement($name, $element) {
+        if($this->isElement($this->nicename($name)))
+            return $this->strip($element);
+        return $element;
+    }
+
+    // Minify closed element keep space
+    function minifyClosedElementKeepSpaces($name, $element) {
+        $nicename = $this->nicename($name);
+        if($this->isElementSkipSpace($nicename) || $this->isElementSkipAll($nicename))
+            return $this->stripSkipSpace($element);
+        return $element;
+    }
+
+    // Minify element closed
+    function minifyElementClosed($name, $element) {
+        $element = $this->minifyClosedElement($name, $element);
+        $element = $this->minifyClosedElementKeepSpaces($name, $element);
+        return $element;
+    }
+
+    /* Strip */
+
     // Minify as much as possible
-    function minifyCompact($element) {
+    function strip($element) {
         $element = preg_replace('!\s+!', ' ', $element);
         $element = str_replace("> ", ">", $element);
         return trim($element);
     }
 
     // Minify but keep one space
-    function minifySpace($element) {
+    function stripSkipSpace($element) {
         return preg_replace('!\s+!', ' ', $element);
     }
 
     // Minify by preserving rows
-    function minifyRows($element) {
+    function stripSkipNewlines($element) {
         $rows = explode("\n", $element);
         $html = '';
         foreach($rows as $part) {
@@ -137,64 +156,62 @@ class TinyHtmlMinifier {
         return $html;
     }
 
+    /* Elements */
+
     // Elements to array
     function elementsToArray($elements) {
-        $trim = str_replace(["\n", "\r", " "], ["", "", ""], $elements);
-        return explode(',', $trim);
+        $trim = str_replace(["\n", "\r"], ["", ""], $elements);
+        return array_filter(explode(' ', $trim));
     }
 
     // Elements as rows
-    function elementsAsRows() {
+    function elementsSkipAll() {
         $elements = '
-            address, code, pre, textarea,
+            code pre textarea
         ';
-
         return $this->elementsToArray($elements);
     }
 
-    function elementsAsSpace() {
+    function elementsSkipSpace() {
         $elements = '
-            !doctype,
-            a, abbr, area, article, aside, audio,
-            b, base, bdi, bdo, blockquote, body, br, button,
-            canvas, caption, cite, col, colgroup,
-            datalist, dd, del, details, dfn, div, dialog, dl, dt,
-            em, embed,
-            fieldcaption, fieldset, figure, footer, form,
-            h1, h2, h3, h4, h5, h6,
-            hr, head, header, html,
-            i, img,
-            li,
-            main, mark, menu, menuitem, meta, meter,
-            nav, noscript,
-            object, ol, optgroup, option, output,
-            p, param, picture, progress,
-            q,
-            rp, rt, ruby,
-            s, samp, span, section, select, small, source, strong, sub, summery,
-            table, tbody, td, tfoot, th, thead, time, title, tr, track,
-            u, ul,
-            var, vbr, video,
+            !doctype
+            a abbr address area article aside audio
+            b base bdi bdo blockquote body br button
+            canvas caption cite col colgroup
+            datalist dd del details dfn div dialog dl dt
+            em embed
+            fieldcaption fieldset figure footer form
+            h1 h2 h3 h4 h5 h6
+            hr head header html
+            i img
+            li
+            main mark menu menuitem meta meter
+            nav noscript
+            object ol optgroup option output
+            p param picture progress
+            q
+            rp rt ruby
+            s samp span section select small source strong sub summery
+            table tbody td tfoot th thead time title tr track
+            u ul
+            var vbr video
         ';
-
         return $this->elementsToArray($elements);
     }
 
-    // Elements as compact
-    function elementsAsCompact() {
+    // Elements
+    function elements() {
         $elements = '
-            !doctype, body, head, html, meta, title, link,
+            !doctype body head html meta title link
         ';
 
         $elements .= '
-            style,
+            style
         ';
 
         $elements .= '
-            svg,
-            path,
+            svg path
         ';
-
         return $this->elementsToArray($elements);
     }
 }

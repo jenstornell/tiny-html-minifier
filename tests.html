@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1.0" />
+
+<link href="http://example.com/style.css" rel="stylesheet" />
+<link rel="icon" href="http://example.com/favicon.png" />
+
+<title>Tiny Html Minifier</title>
+
+</head>
+<body class="body">
+
+<div class="main-wrap">
+    <main>
+        <textarea>
+            Some text
+            with newlines
+            and some spaces
+        </textarea>
+
+        <div class="test">
+            <p>This text</p>
+            <p>should not</p>
+            <p>wrap on multiple lines</p>
+        </div>
+    </main>
+</div>
+<script>
+    console.log('Newlines should be kept.');
+    console.log('Whitespace before and after each line should be gone.');
+</script>
+
+</body>
+</html>

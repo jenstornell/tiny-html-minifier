@@ -45,8 +45,8 @@ class TinyHtmlMinifier {
 
         $element = $this->removeComment($name, $element);
         $element = $this->minifyElement($name, $element);
-        $element = $this->minifyElementKeepSpace($name, $element);
-        $element = $this->minifyElementKeepNewlines($name, $element);
+        //$element = $this->minifyElementKeepSpace($name, $element);
+        //$element = $this->minifyElementKeepNewlines($name, $element);
 
         return $element;
     }

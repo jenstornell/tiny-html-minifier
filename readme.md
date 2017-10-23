@@ -13,6 +13,61 @@
 - Comments and cdata will be removed
 - No options needed.
 
+## Before / after
+
+### Before
+
+```html
+<!doctype html>
+<html lang="en">
+<head>
+
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1.0" />
+
+<link href="http://example.com/style.css" rel="stylesheet" />
+<link rel="icon" href="http://example.com/favicon.png" />
+
+<title>Tiny Html Minifier</title>
+
+</head>
+<body class="body">
+
+<div class="main-wrap">
+    <main>
+        <textarea>
+            Some text
+            with newlines
+            and some spaces
+        </textarea>
+
+        <div class="test">
+            <p>This text</p>
+            <p>should not</p>
+            <p>wrap on multiple lines</p>
+        </div>
+    </main>
+</div>
+<script>
+    console.log('Newlines should be kept.');
+    console.log('Whitespace before and after each line should be gone.');
+</script></body>
+</html>
+```
+
+### After
+
+```html
+<!doctype html><html lang="en"><head><meta charset="utf-8" /><meta name="viewport" content="width=device-width,initial-scale=1.0" /><link href="http://example.com/style.css" rel="stylesheet" /><link rel="icon" href="http://example.com/favicon.png" /><title>Tiny Html Minifier</title></head><body class="body"><div class="main-wrap"> <main> <textarea>
+            Some text
+            with newlines
+            and some spaces
+        </textarea> <div class="test"> <p>This text</p> <p>should not</p> <p>wrap on multiple lines</p> </div> </main> </div> <script>
+console.log('Newlines should be kept.');
+console.log('Whitespace before and after each line should be gone.');
+</script></body></html>
+```
+
 ## Install
 
 ### 1. Download the file
@@ -56,7 +111,7 @@ It will keep the newlines, but it will trim the spaces at the start and end of e
 
 ## Pitfalls
 
-Because the class don't work with nodes, it does not know if it's inside a nested element or not, it will not crash if you forgot an ending tag somewhere. That's good, but the downside is that if you place html code inside an inline javascript, it may give you trouble.
+If you put html tags inside a script tag, it may not be minified correctly, because it's not aware of how things are nested.
 
 ## Requirements
 

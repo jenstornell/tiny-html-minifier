@@ -83,15 +83,11 @@ console.log('Whitespace before and after each line should be gone.');
 
 ## Details
 
-Instead of advanced regular expressions or a node solution, this minifier uses a "back to basic" approach. It explode the html elements into chunks. Different types of elements require different types of solutions.
+Instead of advanced regular expressions or a node solution, this minifier uses a "back to basic" approach. It's using explode to split the html elements into chunks. Different types of elements require different types of solutions.
 
 ### Head elements
 
-No single spaces are kept in the head because there should not be any text there.
-
-### Normal elements
-
-Single spaces are kept to preserve inline elements and texts.
+The "head elements" are `!doctype body head html meta title link`. The special thing about them is that no single space is needed between the tags. That's because there should never be any inline elements in the head.
 
 ### Special elements like `textarea`, `code` and `pre`
 
@@ -103,11 +99,15 @@ All html comments and cdata will be removed.
 
 ### Css `style`
 
-Comments, double spaces, tabs and linebreaks are removed.
+In the style elements, all double spaces, tabs and linebreaks will be removed.
 
 ### Javascript `script`
 
-It will keep the newlines, but it will trim the spaces at the start and end of each line.
+In the script elements, the spaces at the start and end of each line will be removed. The newlines will be kept.
+
+### All other elements
+
+In the rest of the elements, single spaces will be kept to preserve inline elements and texts. Double spaces, tabs and newlines will be removed.
 
 ## Pitfalls
 
@@ -123,7 +123,7 @@ This plugin is provided "as is" with no guarantee. Use it at your own risk and a
 
 ## License
 
-[MIT](license.md)
+[MIT](https://github.com/jenstornell/tiny-html-minifier/blob/master/license)
 
 It is discouraged to use this plugin in any project that promotes racism, sexism, homophobia, animal abuse, violence or any other form of hate speech.
 

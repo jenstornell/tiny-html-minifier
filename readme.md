@@ -21,7 +21,8 @@ Download `tiny-html-minifier.php` or the whole ZIP.
 
 ### 2. Add the code
 
-```
+```php
+<?php
 require 'tiny-html-minifier.php';
 echo TinyMinify::html($html);
 ```

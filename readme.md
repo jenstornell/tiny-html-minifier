@@ -81,7 +81,7 @@ require 'tiny-html-minifier.php';
 echo TinyMinify::html($html);
 ```
 
-## Minification details
+## Details
 
 Instead of advanced regular expressions or a node solution, this minifier uses a "back to basic" approach. It explode the html elements into chunks. Different types of elements require different types of solutions.
 
@@ -111,7 +111,7 @@ It will keep the newlines, but it will trim the spaces at the start and end of e
 
 ## Pitfalls
 
-If you put html tags inside a script tag, it may not be minified correctly, because it's not aware of how things are nested.
+If you put html tags inside a script tag, it may not be minified correctly. That's because the minifier is not aware of where elements starts and ends. To get around it, move that kind of javascript code into an external javascript file.
 
 ## Requirements
 

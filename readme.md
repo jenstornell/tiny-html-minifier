@@ -5,12 +5,12 @@
 ## In short
 
 - A PHP html minifier.
-- Really really fast.
-- Only 1 single file is required.
+- It's really really fast.
+- Only 1 file is required.
 - This minifier uses a "back to basic" approach with almost no regular expressions.
-- Inline `style` and `script` are minified very carefully.
-- Elements like `textarea`, `code` and `pre` will not be minified, because they should not be.
-- Comments and cdata will be removed
+- Inline `style` and `script` are minified with caution.
+- Elements like `textarea`, `code` and `pre` will not be minified.
+- Html comments and cdata will be removed.
 - No options needed.
 
 ## Before / after

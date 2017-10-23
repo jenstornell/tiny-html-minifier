@@ -2,8 +2,9 @@
 class TinyHtmlMinifier {
     function __construct() {
         $this->elements = $this->elements();
-        $this->elementsSkipSpace = $this->elementsSkipSpace();
-        $this->elementsSkipAll = $this->elementsSkipAll();
+        $this->elementsKeepSpace = $this->elementsKeepSpace();
+        $this->elementsKeepAll = $this->elementsKeepAll();
+        $this->elementsKeepNewlines = $this->elementsKeepNewlines();
     }
 
     // Minify
@@ -39,26 +40,31 @@ class TinyHtmlMinifier {
 
     // Minify
     function minifyHtml($name, $element) {
-        // No name
-        if($name == '') {                               return trim($element);
-        } elseif($this->isElementClosed($name)) {       return $this->minifyElementClosed($name, $element);
-        } elseif($this->isElement($name)) {             return $this->strip($element);
-        } elseif($this->isComment($name)) {             return $this->removeComment($element);
-        } elseif($this->isElementSkipSpace($name)) {    return $this->stripSkipSpace($element);
-        } elseif($this->isElementSkipAll($name)) {      return $element;
-        } else {                                        return $this->stripSkipNewlines($element); }
-    }
+        $element = $this->minifyEmptyName($name, $element);
+        $element = $this->minifyElementClosed($name, $element);
 
-    // Is comment
-    function isComment($name) {
-        return ($name == '!--') ? true : false;
+        $element = $this->removeComment($name, $element);
+        $element = $this->minifyElement($name, $element);
+        $element = $this->minifyElementKeepSpace($name, $element);
+        $element = $this->minifyElementKeepNewlines($name, $element);
+
+        return $element;
     }
 
     // Remove comment
-    function removeComment($element) {
+    function removeComment($name, $element) {
+        if(!$this->isComment($name)) return $element;
+
         $position = strpos($element, '-->');
         $element = substr($element, $position + 3);
-        return $this->stripSkipSpace($element);
+        return $this->stripKeepSpace($element);
+    }
+
+    /* Is */
+
+     // Is comment
+     function isComment($name) {
+        return ($name == '!--') ? true : false;
     }
 
     // Is style
@@ -77,22 +83,38 @@ class TinyHtmlMinifier {
     }
 
      // Is element space
-     function isElementSkipSpace($name) {
-        return (in_array($name, $this->elementsSkipSpace)) ? true : false;
+     function isElementKeepSpace($name) {
+        return (in_array($name, $this->elementsKeepSpace)) ? true : false;
     }
 
-    // Is element skip all
-    function isElementSkipAll($name) {
-        return (in_array($name, $this->elementsSkipAll)) ? true : false;
+    // Is element keep all
+    function isElementKeepAll($name) {
+        return (in_array($name, $this->elementsKeepAll)) ? true : false;
+    }
+
+    // Is element keep all
+    function isElementKeepNewlines($name) {
+        return (in_array($name, $this->elementsKeepNewlines)) ? true : false;
     }
 
     // Get name from element
     function getName($element) {
-        $space = $this->splitByDelimiter(' ', $element);
-        $close = $this->splitByDelimiter('>', $element);
+        $array = [
+            ' ', '>', "\n", "\t"
+        ];
+        $length = 0;
+        $string = '';
+        foreach($array as $sep) {
+            $split = $this->splitByDelimiter($sep, $element);
+            $split_length = strlen($split);
 
-        $name = (strlen($space) < strlen($close)) ? $space : $close;
-        return strtolower($name);
+            if($length == 0 || ($split_length != 0 && $split_length < $length)) {
+                $length = $split_length;
+                $string = $split;
+            }
+        }
+
+        return strtolower($string);
     }
 
     // Limit string by a character
@@ -110,6 +132,43 @@ class TinyHtmlMinifier {
 
     /* Minify */
 
+    // Minify keep space
+
+    function minifyElementKeepNewlines($name, $element) {
+        if($this->isElementKeepNewlines($name))
+            return $this->stripKeepNewlines($element);
+        return $element;
+    }
+
+    function minifyElementKeepSpace($name, $element) {
+        if($this->isElementKeepSpace($name))
+            return $this->stripKeepSpace($element);
+        return $element;
+    }
+
+    // Minify element
+    function minifyElement($name, $element) {
+        if($this->isElement($name))
+            return $this->strip($element);
+        return $element;
+    }
+
+    // Minify empty name
+    function minifyEmptyName($name, $element) {
+        if($name == '')
+            return trim($element);
+        return $element;
+    }
+
+    // Minify element closed
+    function minifyElementClosed($name, $element) {
+        if($this->isElementClosed($name)) {
+            $element = $this->minifyClosedElement($name, $element);
+            $element = $this->minifyClosedElementKeepSpace($name, $element);
+        }
+        return $element;
+    }
+
     // Minify closed element
     function minifyClosedElement($name, $element) {
         if($this->isElement($this->nicename($name)))
@@ -118,36 +177,29 @@ class TinyHtmlMinifier {
     }
 
     // Minify closed element keep space
-    function minifyClosedElementKeepSpaces($name, $element) {
+    function minifyClosedElementKeepSpace($name, $element) {
         $nicename = $this->nicename($name);
-        if($this->isElementSkipSpace($nicename) || $this->isElementSkipAll($nicename))
-            return $this->stripSkipSpace($element);
-        return $element;
-    }
-
-    // Minify element closed
-    function minifyElementClosed($name, $element) {
-        $element = $this->minifyClosedElement($name, $element);
-        $element = $this->minifyClosedElementKeepSpaces($name, $element);
+        if($this->isElementKeepSpace($nicename) || $this->isElementKeepAll($nicename))
+            return $this->stripKeepSpace($element);
         return $element;
     }
 
     /* Strip */
 
-    // Minify as much as possible
+    // Strip as much as possible
     function strip($element) {
         $element = preg_replace('!\s+!', ' ', $element);
         $element = str_replace("> ", ">", $element);
         return trim($element);
     }
 
-    // Minify but keep one space
-    function stripSkipSpace($element) {
+    // Strip but keep one space
+    function stripKeepSpace($element) {
         return preg_replace('!\s+!', ' ', $element);
     }
 
     // Minify by preserving rows
-    function stripSkipNewlines($element) {
+    function stripKeepNewlines($element) {
         $rows = explode("\n", $element);
         $html = '';
         foreach($rows as $part) {
@@ -165,14 +217,15 @@ class TinyHtmlMinifier {
     }
 
     // Elements as rows
-    function elementsSkipAll() {
+    function elementsKeepAll() {
         $elements = '
             code pre textarea
         ';
         return $this->elementsToArray($elements);
     }
 
-    function elementsSkipSpace() {
+    // Elements keep space
+    function elementsKeepSpace() {
         $elements = '
             !doctype
             a abbr address area article aside audio
@@ -196,6 +249,12 @@ class TinyHtmlMinifier {
             u ul
             var vbr video
         ';
+        return $this->elementsToArray($elements);
+    }
+
+    // Elements keep newlines
+    function elementsKeepNewlines() {
+        $elements = 'script';
         return $this->elementsToArray($elements);
     }
 

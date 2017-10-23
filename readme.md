@@ -1,10 +1,17 @@
 # Tiny Html Minifier
 
-![Version 1](https://img.shields.io/badge/version-1-blue.svg) ![MIT license](https://img.shields.io/badge/license-MIT-green.svg) [![Donate](https://img.shields.io/badge/give-donation-yellow.svg)](https://www.paypal.me/DevoneraAB)
+![Version 1.0](https://img.shields.io/badge/version-1.0-blue.svg) ![MIT license](https://img.shields.io/badge/license-MIT-green.svg) [![Donate](https://img.shields.io/badge/give-donation-yellow.svg)](https://www.paypal.me/DevoneraAB)
 
+## In short
+
+- A PHP html minifier.
+- Really really fast.
 - Only 1 single file is required.
-- This minifier uses a "back to basic" approach with less regular expressions.
-- Inline css and javascript are minified very carefully.
+- This minifier uses a "back to basic" approach with almost no regular expressions.
+- Inline `style` and `script` are minified very carefully.
+- Elements like `textarea`, `code` and `pre` will not be minified, because they should not be.
+- Comments and cdata will be removed
+- No options needed.
 
 ## Install
 
@@ -15,25 +22,25 @@ Download `tiny-html-minifier.php` or the whole ZIP.
 ### 2. Add the code
 
 ```
-require_once __DIR__ '\tiny-html-minifier.php';
+require 'tiny-html-minifier.php';
 echo TinyMinify::html($html);
 ```
 
 ## Minification details
 
-Instead of advanced regular expressions or a node solution, this minifier uses a "back to basic" approach. It explode html tags into chunks and depending on what type is it, it will minify it in a certain way.
+Instead of advanced regular expressions or a node solution, this minifier uses a "back to basic" approach. It explode the html elements into chunks. Different types of elements require different types of solutions.
 
-### Normal html
+### Normal elements
 
 Single spaces are kept to preserve inline elements and texts.
 
 ### Head
 
-No single spaces are kept in the head elements as it should not be any text there.
+No single spaces are kept in the head because there should not be any text there.
 
 ### Textarea, code and pre
 
-These elements need to keep tabs, spaces and newlines intact so these elements will not be minified at all.
+These elements need to keep tabs, spaces and newlines intact. These elements will therefor not be minified at all.
 
 ### Html comments and cdata
 
@@ -46,6 +53,10 @@ Comments, double spaces, tabs and linebreaks are removed.
 ### Script
 
 It will keep the newlines, but it will trim the spaces at the start and end of each line.
+
+## Pitfalls
+
+Because the class don't work with nodes, it does not know if it's inside a nested element or not, it will not crash if you forgot an ending tag somewhere. That's good, but the downside is that if you place html code inside an inline javascript, it may give you trouble.
 
 ## Requirements
 

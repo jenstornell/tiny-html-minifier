@@ -13,6 +13,19 @@
 - Html comments and cdata will be removed.
 - No options needed.
 
+## Install & usage
+
+### 1. Download the file
+
+Download `tiny-html-minifier.php` or the whole ZIP.
+
+### 2. Add the code
+
+```
+require 'tiny-html-minifier.php';
+echo TinyMinify::html($html);
+```
+
 ## Before / after
 
 ### Before
@@ -66,19 +79,6 @@
 console.log('Newlines should be kept.');
 console.log('Whitespace before and after each line should be gone.');
 </script></body></html>
-```
-
-## Install
-
-### 1. Download the file
-
-Download `tiny-html-minifier.php` or the whole ZIP.
-
-### 2. Add the code
-
-```
-require 'tiny-html-minifier.php';
-echo TinyMinify::html($html);
 ```
 
 ## Details

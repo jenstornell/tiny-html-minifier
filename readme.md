@@ -85,27 +85,27 @@ echo TinyMinify::html($html);
 
 Instead of advanced regular expressions or a node solution, this minifier uses a "back to basic" approach. It explode the html elements into chunks. Different types of elements require different types of solutions.
 
+### Head elements
+
+No single spaces are kept in the head because there should not be any text there.
+
 ### Normal elements
 
 Single spaces are kept to preserve inline elements and texts.
 
-### Head
-
-No single spaces are kept in the head because there should not be any text there.
-
-### Textarea, code and pre
+### Special elements like `textarea`, `code` and `pre`
 
 These elements need to keep tabs, spaces and newlines intact. These elements will therefor not be minified at all.
 
-### Html comments and cdata
+### Comments `<!-- -->` and cdata `<![CDATA[]]>`
 
 All html comments and cdata will be removed.
 
-### Style
+### Css `style`
 
 Comments, double spaces, tabs and linebreaks are removed.
 
-### Script
+### Javascript `script`
 
 It will keep the newlines, but it will trim the spaces at the start and end of each line.
 
@@ -123,7 +123,7 @@ This plugin is provided "as is" with no guarantee. Use it at your own risk and a
 
 ## License
 
-[MIT](https://opensource.org/licenses/MIT)
+[MIT](license.md)
 
 It is discouraged to use this plugin in any project that promotes racism, sexism, homophobia, animal abuse, violence or any other form of hate speech.
 

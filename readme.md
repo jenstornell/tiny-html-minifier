@@ -89,21 +89,21 @@ Instead of advanced regular expressions or a node solution, this minifier uses a
 
 The "head elements" are `!doctype body head html meta title link`. The special thing about them is that no single space is needed between the tags. That's because there should never be any inline elements in the head.
 
-### Special elements like `textarea`, `code` and `pre`
+### Special elements
 
-These elements need to keep tabs, spaces and newlines intact. These elements will therefor not be minified at all.
+Special elements like `textarea`, `code` and `pre` needs to keep tabs, spaces and newlines intact. These elements will therefor not be minified at all.
 
-### Comments `<!-- -->` and cdata `<![CDATA[]]>`
+### Comments and cdata
 
-All html comments and cdata will be removed.
+All html comments `<!-- -->` and cdata `<![CDATA[]]>` will be removed.
 
-### Css `style`
+### Inline css
 
-In the style elements, all double spaces, tabs and linebreaks will be removed.
+In the `style` elements, all double spaces, tabs and linebreaks will be removed.
 
-### Javascript `script`
+### Inline javascript
 
-In the script elements, the spaces at the start and end of each line will be removed. The newlines will be kept.
+In the `script` elements, the spaces at the start and end of each line will be removed. The newlines will be kept.
 
 ### All other elements
 

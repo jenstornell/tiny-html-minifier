@@ -19,9 +19,6 @@ class TinyHtmlMinifier {
 
     // Minify
     function minify($html) {
-
-        $html = file_get_contents(__DIR__ . '\tests.html');
-
         $html = str_replace("\r", '', $html);
         $html = preg_replace('/<!\[cdata\[(.*?)\]\]>/is', '', $html);
         $html = $this->parser($html);

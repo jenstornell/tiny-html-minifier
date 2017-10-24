@@ -1,15 +1,28 @@
 <?php
 class TinyHtmlMinifier {
-    function __construct() {
+    function __construct($options) {
+        $this->options = $options;
         $this->elements = $this->elements();
         $this->elementsKeepSpace = $this->elementsKeepSpace();
         $this->elementsKeepAll = $this->elementsKeepAll();
         $this->elementsKeepNewlines = $this->elementsKeepNewlines();
     }
 
+    function getOption($value) {
+        $defaults = [
+            'collapse_whitespace' => false
+        ];
+        if(isset($this->options[$value]))
+            return $this->options[$value];
+        return $defaults[$value];
+    }
+
     // Minify
     function minify($html) {
-        $html = str_replace("\r", "\n", $html);
+
+        $html = file_get_contents(__DIR__ . '\tests.html');
+
+        $html = str_replace("\r", '', $html);
         $html = preg_replace('/<!\[cdata\[(.*?)\]\]>/is', '', $html);
         $html = $this->parser($html);
         
@@ -44,9 +57,9 @@ class TinyHtmlMinifier {
         $element = $this->minifyElementClosed($name, $element);
 
         $element = $this->removeComment($name, $element);
-        $element = $this->minifyElement($name, $element);
-        //$element = $this->minifyElementKeepSpace($name, $element);
-        //$element = $this->minifyElementKeepNewlines($name, $element);
+        $element = $this->minifyElement($name, $element); // Head elements for most part
+        $element = $this->minifyElementKeepSpace($name, $element); // Normal elements
+        $element = $this->minifyElementKeepNewlines($name, $element); // Textarea, pre, code
 
         return $element;
     }
@@ -132,17 +145,22 @@ class TinyHtmlMinifier {
 
     /* Minify */
 
-    // Minify keep space
-
+    // Minify keep newlines
     function minifyElementKeepNewlines($name, $element) {
         if($this->isElementKeepNewlines($name))
             return $this->stripKeepNewlines($element);
         return $element;
     }
 
+    // Minify keep space
     function minifyElementKeepSpace($name, $element) {
-        if($this->isElementKeepSpace($name))
-            return $this->stripKeepSpace($element);
+        if($this->isElementKeepSpace($name)) {
+            if($this->getOption('collapse_whitespace')) {
+                return $this->strip($element);
+            } else {
+                return $this->stripKeepSpace($element);
+            }
+        }
         return $element;
     }
 
@@ -179,8 +197,13 @@ class TinyHtmlMinifier {
     // Minify closed element keep space
     function minifyClosedElementKeepSpace($name, $element) {
         $nicename = $this->nicename($name);
-        if($this->isElementKeepSpace($nicename) || $this->isElementKeepAll($nicename))
-            return $this->stripKeepSpace($element);
+        if($this->isElementKeepSpace($nicename) || $this->isElementKeepAll($nicename)) {
+            if($this->getOption('collapse_whitespace')) {
+                return $this->strip($element);
+            } else {
+                return $this->stripKeepSpace($element);
+            }
+        }
         return $element;
     }
 
@@ -201,11 +224,12 @@ class TinyHtmlMinifier {
     // Minify by preserving rows
     function stripKeepNewlines($element) {
         $rows = explode("\n", $element);
-        $html = '';
+        $html = [];
         foreach($rows as $part) {
-            $html .= trim($part) . "\n";
+            $html[] = trim($part);
+
         }
-        return $html;
+        return implode("\n", $html);
     }
 
     /* Elements */
@@ -276,8 +300,8 @@ class TinyHtmlMinifier {
 }
 
 class TinyMinify {
-    static function html($html) {
-        $minifier = new TinyHtmlMinifier();
+    static function html($html, $options = []) {
+        $minifier = new TinyHtmlMinifier($options);
         return $minifier->minify($html);
     }
 }

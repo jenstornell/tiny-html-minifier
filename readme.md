@@ -1,17 +1,18 @@
 # Tiny Html Minifier
 
-![Version 1.0](https://img.shields.io/badge/version-1.0-blue.svg) ![MIT license](https://img.shields.io/badge/license-MIT-green.svg) [![Donate](https://img.shields.io/badge/give-donation-yellow.svg)](https://www.paypal.me/DevoneraAB)
+![Version 1.1](https://img.shields.io/badge/version-1.1-blue.svg) ![MIT license](https://img.shields.io/badge/license-MIT-green.svg) [![Donate](https://img.shields.io/badge/give-donation-yellow.svg)](https://www.paypal.me/DevoneraAB)
 
 ## In short
 
 - A PHP html minifier.
 - It's really really fast.
 - Only 1 file is required.
-- This minifier uses a "back to basic" approach with almost no regular expressions.
+- Almost no regular expressions.
+- Almost no options.
 - Inline `style` and `script` are minified with caution.
 - Elements like `textarea`, `code` and `pre` will not be minified.
 - Html comments and cdata will be removed.
-- No options needed.
+- Inline elements will still work.
 
 ## Install & usage
 
@@ -82,6 +83,36 @@ console.log('Whitespace before and after each line should be gone.');
 </script></body></html>
 ```
 
+## Options
+
+```php
+<?php
+require 'tiny-html-minifier.php';
+echo TinyMinify::html($html, $options = [
+    'collapse_whitespace' => false
+]);
+```
+
+### collapse_whitespace
+
+#### Not collapsed
+
+Spaces are preserved, in case the elements are positioned inline. This is the default.
+
+```html
+<ul><li> <a href="#"> My link </a></li><li> <a href="#"> My link </a></li> </ul>
+```
+
+#### Collapsed
+
+Spaces are collapsed. The text inside the element is still untouched. Set this value to `true` and you will save a few extra bytes.
+
+```html
+<ul><li><a href="#">My link</a></li><li><a href="#">My link</a></li></ul>
+```
+
+<!--
+
 ## Details
 
 Instead of advanced regular expressions or a node solution, this minifier uses a "back to basic" approach. It's using explode to split the html elements into chunks. Different types of elements require different types of solutions.
@@ -96,7 +127,7 @@ Special elements like `textarea`, `code` and `pre` needs to keep tabs, spaces an
 
 ### Comments and cdata
 
-All html comments `<!-- -->` and cdata `<![CDATA[]]>` will be removed.
+All html comments and cdata `<![CDATA[]]>` will be removed.
 
 ### Inline css
 
@@ -109,6 +140,8 @@ In the `script` elements, the spaces at the start and end of each line will be r
 ### All other elements
 
 In the rest of the elements, single spaces will be kept to preserve inline elements and texts. Double spaces, tabs and newlines will be removed.
+
+-->
 
 ## Pitfalls
 

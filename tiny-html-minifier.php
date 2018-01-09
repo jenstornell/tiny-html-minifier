@@ -20,7 +20,6 @@ class TinyHtmlMinifier {
     // Minify
     function minify($html) {
         $html = str_replace("\r", '', $html);
-        $html = preg_replace('/<!\[cdata\[(.*?)\]\]>/is', '', $html);
         $html = $this->parser($html);
         
         return $html;
@@ -35,7 +34,7 @@ class TinyHtmlMinifier {
             if($part == '') continue;
 
             $name = $this->getName($part);
-            $element = $this->partToElement($part);
+            $element = (count($split) > 1) ? $this->partToElement($part) : $part;
 
             $html .= $this->minifyHtml($name, $element);
         }

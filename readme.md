@@ -1,6 +1,8 @@
 # Tiny Html Minifier
 
-![Version 1.1](https://img.shields.io/badge/version-1.1-blue.svg) ![MIT license](https://img.shields.io/badge/license-MIT-green.svg) [![Donate](https://img.shields.io/badge/give-donation-yellow.svg)](https://www.paypal.me/DevoneraAB)
+![Version 1.2](https://img.shields.io/badge/version-1.2-blue.svg) ![MIT license](https://img.shields.io/badge/license-MIT-green.svg) [![Donate](https://img.shields.io/badge/give-donation-yellow.svg)](https://www.paypal.me/DevoneraAB)
+
+[Changelog](changelog.md)
 
 ## In short
 

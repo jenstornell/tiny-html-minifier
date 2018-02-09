@@ -1,0 +1,12 @@
+{
+    "name": "jenstornell/tiny-html-minifier",
+    "description": "Minify HTML in PHP with just a single class",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Jens Törnell",
+            "email": "jens@jenst.se"
+        }
+    ]
+}

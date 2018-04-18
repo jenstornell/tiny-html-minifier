@@ -6,8 +6,6 @@
 
 ## In short
 
-A really fast single file HTML minifier in PHP.
-
 - A HTML minifier in PHP.
 - It's really really fast.
 - Only 1 file is required.

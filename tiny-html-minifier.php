@@ -149,7 +149,7 @@ class TinyHtmlMinifier {
             return $content;
         } elseif(
             in_array($name, $this->elements['hard']) ||
-            $this->options['collapse_whitespace'] ||
+            !empty($this->options['collapse_whitespace']) ||
             $this->head
             ) {
             return $this->minifyHard($content);

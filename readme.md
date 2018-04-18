@@ -1,6 +1,6 @@
 # Tiny Html Minifier
 
-![Version 1.2](https://img.shields.io/badge/version-1.2-blue.svg) ![MIT license](https://img.shields.io/badge/license-MIT-green.svg) [![Donate](https://img.shields.io/badge/give-donation-yellow.svg)](https://www.paypal.me/DevoneraAB)
+![Version 2.0](https://img.shields.io/badge/version-2.0-blue.svg) ![MIT license](https://img.shields.io/badge/license-MIT-green.svg) [![Donate](https://img.shields.io/badge/give-donation-yellow.svg)](https://www.paypal.me/DevoneraAB)
 
 [Changelog](changelog.md)
 
@@ -11,16 +11,21 @@
 - Only 1 file is required.
 - Almost no regular expressions.
 - Almost no options.
-- Inline `style` and `script` are minified with caution.
-- Elements like `textarea`, `code` and `pre` will not be minified.
-- Html comments and cdata will be removed.
-- Inline elements will still work.
+- The elements `code`, `pre`, `style` and `script` and `textarea` will not be minified.
+- Html comments will be removed.
+- Custom Elements and inline SVG data will be minified.
 
 ## Install & usage
 
-### 1. Download the file
+### 1. Download
+
+**ZIP**
 
 Download `tiny-html-minifier.php` or the whole ZIP.
+
+**Composer**
+
+You can install it with Composer as well.
 
 ### 2. Add the code
 
@@ -75,13 +80,13 @@ echo TinyMinify::html($html);
 ### After
 
 ```html
-<!doctype html><html lang="en"><head><meta charset="utf-8" /><meta name="viewport" content="width=device-width,initial-scale=1.0" /><link href="http://example.com/style.css" rel="stylesheet" /><link rel="icon" href="http://example.com/favicon.png" /><title>Tiny Html Minifier</title></head><body class="body"><div class="main-wrap"> <main> <textarea>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><link href="http://example.com/style.css" rel="stylesheet"><link rel="icon" href="http://example.com/favicon.png"><title>Tiny Html Minifier</title></head> <body class="body"><div class="main-wrap"> <main> <textarea>
             Some text
             with newlines
             and some spaces
         </textarea> <div class="test"> <p>This text</p> <p>should not</p> <p>wrap on multiple lines</p> </div> </main> </div> <script>
-console.log('Newlines should be kept.');
-console.log('Whitespace before and after each line should be gone.');
+    console.log('Newlines should be kept.');
+    console.log('Whitespace before and after each line should be gone.');
 </script></body></html>
 ```
 
@@ -99,7 +104,7 @@ echo TinyMinify::html($html, $options = [
 
 #### Not collapsed
 
-Spaces are preserved, in case the elements are positioned inline. This is the default.
+Spaces are preserved (except for most elements within `<head></head>`). It's good when using the elements inline. This is the default.
 
 ```html
 <ul><li> <a href="#"> My link </a></li><li> <a href="#"> My link </a></li> </ul>
@@ -112,42 +117,6 @@ Spaces are collapsed. The text inside the element is still untouched. Set this v
 ```html
 <ul><li><a href="#">My link</a></li><li><a href="#">My link</a></li></ul>
 ```
-
-<!--
-
-## Details
-
-Instead of advanced regular expressions or a node solution, this minifier uses a "back to basic" approach. It's using explode to split the html elements into chunks. Different types of elements require different types of solutions.
-
-### Head elements
-
-The "head elements" are `!doctype body head html meta title link`. The special thing about them is that no single space is needed between the tags. That's because there should never be any inline elements in the head.
-
-### Special elements
-
-Special elements like `textarea`, `code` and `pre` needs to keep tabs, spaces and newlines intact. These elements will therefor not be minified at all.
-
-### Comments and cdata
-
-All html comments and cdata `<![CDATA[]]>` will be removed.
-
-### Inline css
-
-In the `style` elements, all double spaces, tabs and linebreaks will be removed.
-
-### Inline javascript
-
-In the `script` elements, the spaces at the start and end of each line will be removed. The newlines will be kept.
-
-### All other elements
-
-In the rest of the elements, single spaces will be kept to preserve inline elements and texts. Double spaces, tabs and newlines will be removed.
-
--->
-
-## Pitfalls
-
-If you put html tags inside a script tag, it may not be minified correctly. That's because the minifier is not aware of where elements starts and ends. To get around it, move that kind of javascript code into an external javascript file.
 
 ## Requirements
 

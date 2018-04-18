@@ -79,8 +79,8 @@ echo TinyMinify::html($html);
     </main>
 </div>
 <script>
-    console.log('Newlines should be kept.');
-    console.log('Whitespace before and after each line should be gone.');
+    console.log('Script tags are not minified');
+    console.log('This is inside a script tag');
 </script></body>
 </html>
 ```
@@ -93,8 +93,8 @@ echo TinyMinify::html($html);
             with newlines
             and some spaces
         </textarea> <div class="test"> <p>This text</p> <p>should not</p> <p>wrap on multiple lines</p> </div> </main> </div> <script>
-    console.log('Newlines should be kept.');
-    console.log('Whitespace before and after each line should be gone.');
+    console.log('Script tags are not minified');
+    console.log('This is inside a script tag');
 </script></body></html>
 ```
 

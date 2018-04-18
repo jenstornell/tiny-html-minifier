@@ -6,14 +6,24 @@
 
 ## In short
 
-- A PHP html minifier.
+A really fast single file HTML minifier in PHP.
+
+- A HTML minifier in PHP.
 - It's really really fast.
 - Only 1 file is required.
 - Almost no regular expressions.
 - Almost no options.
-- The elements `code`, `pre`, `style` and `script` and `textarea` will not be minified.
-- Html comments will be removed.
-- Custom Elements and inline SVG data will be minified.
+
+## Details - What the minifier does
+
+- Remove HTML comments.
+- Remove slash in self closing elements. ` />` becomes `>`.
+- Remove ` type="text/css"` and `type="text/javascript"` in `style` and `script` tags.
+- Minimize elements within `<head></head>`. It will not keep any whitespace (except inside `script`).
+- Minimize elements within `<body></body>` but keep spaces between tags to preserve inline data (optional).
+- Minimize inline SVG files (which are a bunch of XML tags).
+- Minimize Custom Elements. They look like this: `<my-element>My content</my-element>`.
+- Skip `code`, `pre`, `script` and `textarea` from being minified.
 
 ## Install & usage
 

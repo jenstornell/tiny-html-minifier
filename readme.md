@@ -131,7 +131,7 @@ Spaces are collapsed. The text inside the element is still untouched. Set this v
 
 ***This is an experimental feature that could break your site!***
 
-If you use [schema.org](http://schema.org) in json-ld format, the script tag will look like this: `<script type="application/ld+json"></script>`
+If you use [schema.org](http://schema.org) in json-ld format, the script tag will look like this: `<script type="application/ld+json"></script>`.
 
 While it may work in many cases, it will break if `<` or `>` is present in the json data.
 

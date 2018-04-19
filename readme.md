@@ -104,7 +104,8 @@ echo TinyMinify::html($html);
 <?php
 require 'tiny-html-minifier.php';
 echo TinyMinify::html($html, $options = [
-    'collapse_whitespace' => false
+    'collapse_whitespace' => false,
+    'collapse_json_lt' => false, // WARNING - EXPERIMENTAL FEATURE
 ]);
 ```
 
@@ -125,6 +126,14 @@ Spaces are collapsed. The text inside the element is still untouched. Set this v
 ```html
 <ul><li><a href="#">My link</a></li><li><a href="#">My link</a></li></ul>
 ```
+
+### collapse_json_lt
+
+***This is an experimental feature that could break your site!***
+
+If you use [schema.org](http://schema.org) in json-ld format, the script tag will look like this: `<script type="application/ld+json"></script>`
+
+While it may work in many cases, it will break if `<` or `>` is present in the json data.
 
 ## Requirements
 

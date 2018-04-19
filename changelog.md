@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.1
+
+- Added experimental feature support for minify `<script type="json-ld"></script>`.
+
 ## 2.0
 
 - A complete rewrite and bump to version 2.

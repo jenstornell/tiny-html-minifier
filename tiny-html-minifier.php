@@ -57,7 +57,7 @@ class TinyHtmlMinifier {
                 $content = (isset($tag_parts[1])) ? $tag_parts[1] : '';
                 if(!empty($content)) {
                     $this->build[] = [
-                        'content' => $this->compact($content, $name),
+                        'content' => $this->compact($content, $name, $element),
                         'type' => 'content'
                     ];
                 }
@@ -138,14 +138,19 @@ class TinyHtmlMinifier {
     }
 
     // Compact content
-    function compact($content, $name) {
+    function compact($content, $name, $element) {
         if($this->skip != 0) {
             $name = $this->skipName;
         } else {
             $content = preg_replace('/\s+/', ' ', $content);
         }
 
-        if(in_array($name, $this->elements['skip'])) {
+        if(
+            $this->isSchema($name, $element) &&
+            !empty($this->options['collapse_json_ld'])
+            ) {
+            return json_encode(json_decode($content));
+        } if(in_array($name, $this->elements['skip'])) {
             return $content;
         } elseif(
             in_array($name, $this->elements['hard']) ||
@@ -156,6 +161,14 @@ class TinyHtmlMinifier {
         } else {
             return $this->minifyKeepSpaces($content);
         }
+    }
+
+    function isSchema($name, $element) {
+        if($name != 'script') return false;
+
+        $element = strtolower($element);
+        if($this->contains('application/ld+json', $element)) return true;
+        return false;
     }
 
     // Build html

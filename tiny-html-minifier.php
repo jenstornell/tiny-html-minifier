@@ -13,6 +13,33 @@ class TinyHtmlMinifier {
                 'textarea',
                 'script'
             ],
+            'inline' => [
+                'b',
+                'big',
+                'i',
+                'small',
+                'tt',
+                'abbr',
+                'acronym',
+                'cite',
+                'code',
+                'dfn',
+                'em',
+                'kbd',
+                'strong',
+                'samp',
+                'var',
+                'a',
+                'bdo',
+                'br',
+                'img',
+                'map',
+                'object',
+                'q',
+                'span',
+                'sub',
+                'sup',
+            ],
             'hard' => [
                 '!doctype',
                 'body',
@@ -48,7 +75,8 @@ class TinyHtmlMinifier {
             $this->build[] = [
                 'name' => $name,
                 'content' => $element,
-                'type' => $type
+                'type' => $type,
+                'inline' => in_array($name, $this->elements['inline']),
             ];
 
             $this->setSkip($name, $type);
@@ -56,10 +84,14 @@ class TinyHtmlMinifier {
             if(!empty($tag_content)) {
                 $content = (isset($tag_parts[1])) ? $tag_parts[1] : '';
                 if(!empty($content)) {
-                    $this->build[] = [
-                        'content' => $this->compact($content, $name, $element),
-                        'type' => 'content'
-                    ];
+                    $content = $this->compact($content, $name, $element);
+                    if(!empty($content)) {
+                       $this->build[] = [
+                            'content' => $content,
+                            'type' => 'content',
+                            'inline' => true,
+                        ];
+                    }
                 }
             }
         }
@@ -174,7 +206,16 @@ class TinyHtmlMinifier {
     // Build html
     function buildHtml() {
         $out = '';
-        foreach($this->build as $build) {
+
+        foreach($this->build as $key => $build) {
+            
+            if(!empty($this->options['collapse_whitespace']) && $key != 0) {
+                $prev = $this->build[$key-1];
+                if($prev['inline'] == true && $build['inline'] == true && $prev['type'] != 'open' && $build['type'] != 'close') {
+                    $out .= ' ';
+                }
+            }
+
             $out .= $build['content'];
         }
         return $out;

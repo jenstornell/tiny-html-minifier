@@ -40,6 +40,11 @@ class TinyHtmlMinifier {
                 'sub',
                 'sup',
             ],
+            'no_space' => [
+                ',',
+                '.',
+                '!',
+            ],
             'hard' => [
                 '!doctype',
                 'body',
@@ -211,7 +216,7 @@ class TinyHtmlMinifier {
             
             if(!empty($this->options['collapse_whitespace']) && $key != 0) {
                 $prev = $this->build[$key-1];
-                if($prev['inline'] == true && $build['inline'] == true && $prev['type'] != 'open' && $build['type'] != 'close') {
+                if($prev['inline'] == true && $build['inline'] == true && $prev['type'] != 'open' && $build['type'] != 'close' && !in_array(substr($build['content'], 0, 1), $this->elements['no_space'])) {
                     $out .= ' ';
                 }
             }

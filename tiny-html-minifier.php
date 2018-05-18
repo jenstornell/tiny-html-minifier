@@ -84,7 +84,6 @@ class TinyHtmlMinifier {
                 $content = (isset($tag_parts[1])) ? $tag_parts[1] : '';
                 if(!empty($content)) {
                     $this->build[] = [
-                        //'content' => $content,
                         'content' => $this->compact($content, $name, $element),
                         'type' => 'content'
                     ];
@@ -201,7 +200,7 @@ class TinyHtmlMinifier {
     // Build html
     function buildHtml() {
         $out = '';
-        foreach($this->build as $key => $build) {
+        foreach($this->build as $build) {
 
             if(!empty($this->options['collapse_whitespace'])) {
                 

@@ -40,11 +40,6 @@ class TinyHtmlMinifier {
                 'sub',
                 'sup',
             ],
-            'no_space' => [
-                ',',
-                '.',
-                '!',
-            ],
             'hard' => [
                 '!doctype',
                 'body',
@@ -80,8 +75,7 @@ class TinyHtmlMinifier {
             $this->build[] = [
                 'name' => $name,
                 'content' => $element,
-                'type' => $type,
-                'inline' => in_array($name, $this->elements['inline']),
+                'type' => $type
             ];
 
             $this->setSkip($name, $type);
@@ -89,14 +83,11 @@ class TinyHtmlMinifier {
             if(!empty($tag_content)) {
                 $content = (isset($tag_parts[1])) ? $tag_parts[1] : '';
                 if(!empty($content)) {
-                    $content = $this->compact($content, $name, $element);
-                    if(!empty($content)) {
-                       $this->build[] = [
-                            'content' => $content,
-                            'type' => 'content',
-                            'inline' => true,
-                        ];
-                    }
+                    $this->build[] = [
+                        //'content' => $content,
+                        'content' => $this->compact($content, $name, $element),
+                        'type' => 'content'
+                    ];
                 }
             }
         }
@@ -191,7 +182,6 @@ class TinyHtmlMinifier {
             return $content;
         } elseif(
             in_array($name, $this->elements['hard']) ||
-            !empty($this->options['collapse_whitespace']) ||
             $this->head
             ) {
             return $this->minifyHard($content);
@@ -211,18 +201,21 @@ class TinyHtmlMinifier {
     // Build html
     function buildHtml() {
         $out = '';
-
         foreach($this->build as $key => $build) {
-            
-            if(!empty($this->options['collapse_whitespace']) && $key != 0) {
-                $prev = $this->build[$key-1];
-                if($prev['inline'] == true && $build['inline'] == true && $prev['type'] != 'open' && $build['type'] != 'close' && !in_array(substr($build['content'], 0, 1), $this->elements['no_space'])) {
-                    $out .= ' ';
-                }
+
+            if(!empty($this->options['collapse_whitespace'])) {
+                
+                if(strlen(trim($build['content'])) == 0)
+                    continue;
+                
+                elseif($build['type'] != 'content' && !in_array($build['name'], $this->elements['inline']))
+                    trim($build['content']);
+                
             }
 
             $out .= $build['content'];
         }
+        
         return $out;
     }
 

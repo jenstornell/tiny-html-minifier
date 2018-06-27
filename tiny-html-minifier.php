@@ -81,7 +81,7 @@ class TinyHtmlMinifier {
             $this->setSkip($name, $type);
 
             if(!empty($tag_content)) {
-                $content = isset($tag_parts[1]) ? trim($tag_parts[1]) : '';
+                $content = (isset($tag_parts[1])) ? $tag_parts[1] : '';
                 if($content !== '') {
                     $this->build[] = [
                         'content' => $this->compact($content, $name, $element),

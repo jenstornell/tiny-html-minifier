@@ -13,6 +13,33 @@ class TinyHtmlMinifier {
                 'textarea',
                 'script'
             ],
+            'inline' => [
+                'b',
+                'big',
+                'i',
+                'small',
+                'tt',
+                'abbr',
+                'acronym',
+                'cite',
+                'code',
+                'dfn',
+                'em',
+                'kbd',
+                'strong',
+                'samp',
+                'var',
+                'a',
+                'bdo',
+                'br',
+                'img',
+                'map',
+                'object',
+                'q',
+                'span',
+                'sub',
+                'sup',
+            ],
             'hard' => [
                 '!doctype',
                 'body',
@@ -55,7 +82,7 @@ class TinyHtmlMinifier {
 
             if(!empty($tag_content)) {
                 $content = (isset($tag_parts[1])) ? $tag_parts[1] : '';
-                if(!empty($content)) {
+                if($content !== '') {
                     $this->build[] = [
                         'content' => $this->compact($content, $name, $element),
                         'type' => 'content'
@@ -154,7 +181,6 @@ class TinyHtmlMinifier {
             return $content;
         } elseif(
             in_array($name, $this->elements['hard']) ||
-            !empty($this->options['collapse_whitespace']) ||
             $this->head
             ) {
             return $this->minifyHard($content);
@@ -175,8 +201,20 @@ class TinyHtmlMinifier {
     function buildHtml() {
         $out = '';
         foreach($this->build as $build) {
+
+            if(!empty($this->options['collapse_whitespace'])) {
+                
+                if(strlen(trim($build['content'])) == 0)
+                    continue;
+                
+                elseif($build['type'] != 'content' && !in_array($build['name'], $this->elements['inline']))
+                    trim($build['content']);
+                
+            }
+
             $out .= $build['content'];
         }
+        
         return $out;
     }
 

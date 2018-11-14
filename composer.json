@@ -9,5 +9,8 @@
             "name": "Jens Törnell",
             "email": "webblayout@gmail.com"
         }
-    ]
+    ],
+    "autoload": {
+        "classmap": ["tiny-html-minifier.php"]
+    }
 }

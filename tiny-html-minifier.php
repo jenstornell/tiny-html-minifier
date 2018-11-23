@@ -2,6 +2,7 @@
 class TinyHtmlMinifier {
     function __construct($options) {
         $this->options = $options;
+        $this->output = '';
         $this->build = [];
         $this->skip = 0;
         $this->skipName = '';
@@ -51,27 +52,37 @@ class TinyHtmlMinifier {
     // Run minifier
     function minify($html) {
         $html = $this->removeComments($html);
-        $this->walk($html);
-        return $this->buildHtml();
+        
+        $rest = $html;
+
+        while(!empty($rest)) :
+         
+            $parts = explode('<', $rest, 2);
+
+            $this->walk($parts[0]);
+
+            $rest = (isset($parts[1])) ? $parts[1] : '';
+
+        endwhile;
+
+        return $this->output;
     }
 
     // Walk trough html
-    function walk($html) {
-        $parts = explode('<', $html, 2);
-        $part = $parts[0];
+    function walk(&$part) {
 
         $tag_parts = explode('>', $part);
         $tag_content = $tag_parts[0];
         
         if(!empty($tag_content)) {
             $name = $this->findName($tag_content);
-            $element = $this->toElement($tag_content, $parts[0], $name);
+            $element = $this->toElement($tag_content, $part, $name);
             $type = $this->toType($element);
 
             if($name == 'head') {
                 $this->head = ($type == 'open') ? true : false;
             }
-            
+
             $this->build[] = [
                 'name' => $name,
                 'content' => $element,
@@ -89,12 +100,8 @@ class TinyHtmlMinifier {
                     ];
                 }
             }
-        }
 
-        $rest = (isset($parts[1])) ? $parts[1] : '';
-
-        if(!empty($rest)) {
-            $this->walk($rest);
+            $this->buildHtml();
         }
     }
 
@@ -199,7 +206,6 @@ class TinyHtmlMinifier {
 
     // Build html
     function buildHtml() {
-        $out = '';
         foreach($this->build as $build) {
 
             if(!empty($this->options['collapse_whitespace'])) {
@@ -212,10 +218,10 @@ class TinyHtmlMinifier {
                 
             }
 
-            $out .= $build['content'];
+            $this->output .= $build['content'];
         }
-        
-        return $out;
+
+        $this->build = [];
     }
 
     // Find name by part

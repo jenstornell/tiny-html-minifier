@@ -1,6 +1,6 @@
 # Tiny Html Minifier
 
-![Version 2.0](https://img.shields.io/badge/version-2.0-blue.svg) ![MIT license](https://img.shields.io/badge/license-MIT-green.svg) [![Donate](https://img.shields.io/badge/give-donation-yellow.svg)](https://www.paypal.me/DevoneraAB)
+![Version 2.2](https://img.shields.io/badge/version-2.2-blue.svg) ![MIT license](https://img.shields.io/badge/license-MIT-green.svg) [![Donate](https://img.shields.io/badge/give-donation-yellow.svg)](https://www.paypal.me/DevoneraAB)
 
 [Changelog](changelog.md)
 
@@ -106,6 +106,7 @@ require 'tiny-html-minifier.php';
 echo TinyMinify::html($html, $options = [
     'collapse_whitespace' => false,
     'collapse_json_lt' => false, // WARNING - EXPERIMENTAL FEATURE
+    'preserve_conditional_comments' => false,
 ]);
 ```
 
@@ -125,6 +126,21 @@ Spaces are collapsed. The text inside the element is still untouched. Set this v
 
 ```html
 <ul><li><a href="#">My link</a></li><li><a href="#">My link</a></li></ul>
+```
+
+### preserve_conditional_comments
+
+#### Do not preserve
+
+All comments will be removed `<!-- Whatever -->`, also conditional comments `<!--[if lt IE 10]>...<![endif]-->`).
+
+
+#### Preserve
+
+Conditional comments will be preserved. Other comments `<!-- Whatever -->` will be removed.
+
+```html
+<!--[if lt IE 10]>IE only<![endif]-->
 ```
 
 ### collapse_json_lt

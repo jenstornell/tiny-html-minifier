@@ -14,7 +14,7 @@
 
 ## Details - What the minifier does
 
-- Remove HTML comments.
+- Remove HTML comments but keep conditional comments `<!--[if lt IE 10]><![endif]-->` (optional).
 - Remove slash in self closing elements. ` />` becomes `>`.
 - Remove ` type="text/css"` and `type="text/javascript"` in `style` and `script` tags.
 - Minimize elements within `<head></head>`. It will not keep any whitespace (except inside `script`).
@@ -62,6 +62,13 @@ echo TinyMinify::html($html);
 
 </head>
 <body class="body">
+<!--[if lt IE 10]>
+    <p class="text-white text-center h5 m-0">
+        This element wrapped by
+        <a href="https://en.wikipedia.org/wiki/Conditional_comment">conditional comment</a>
+        should not be minified if the option `preserve_conditional_comments` is enabled.
+    </p>
+<![endif]-->
 
 <div class="main-wrap">
     <main>
@@ -88,7 +95,7 @@ echo TinyMinify::html($html);
 ### After
 
 ```html
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><link href="http://example.com/style.css" rel="stylesheet"><link rel="icon" href="http://example.com/favicon.png"><title>Tiny Html Minifier</title></head> <body class="body"><div class="main-wrap"> <main> <textarea>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><link href="http://example.com/style.css" rel="stylesheet"><link rel="icon" href="http://example.com/favicon.png"><title>Tiny Html Minifier</title></head> <body class="body"><!--[if lt IE 10]><p class="text-white text-center h5 m-0">This element wrapped by <a href="https://en.wikipedia.org/wiki/Conditional_comment">conditional comment</a> should not be minified if the option `preserve_conditional_comments` is enabled.</p><![endif]--><div class="main-wrap"> <main> <textarea>
             Some text
             with newlines
             and some spaces
@@ -130,12 +137,12 @@ Spaces are collapsed. The text inside the element is still untouched. Set this v
 
 ### preserve_conditional_comments
 
-#### Do not preserve
+#### Do not preserve `false`
 
 All comments will be removed `<!-- Whatever -->`, also conditional comments `<!--[if lt IE 10]>...<![endif]-->`).
 
 
-#### Preserve
+#### Preserve `true`
 
 Conditional comments will be preserved. Other comments `<!-- Whatever -->` will be removed.
 

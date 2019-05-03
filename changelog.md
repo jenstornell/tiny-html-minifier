@@ -1,5 +1,8 @@
 # Changelog
 
+## 2.2
+- Added option to preserve conditional comments `<!--[if lt IE 10]>IE only<![endif]-->`.
+
 ## 2.1
 
 - Added experimental feature support for minify `<script type="json-ld"></script>`.

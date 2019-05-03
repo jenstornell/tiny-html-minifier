@@ -52,11 +52,11 @@ class TinyHtmlMinifier {
     // Run minifier
     function minify($html) {
         $html = $this->removeComments($html);
-        
+
         $rest = $html;
 
         while(!empty($rest)) :
-         
+
             $parts = explode('<', $rest, 2);
 
             $this->walk($parts[0]);
@@ -73,7 +73,7 @@ class TinyHtmlMinifier {
 
         $tag_parts = explode('>', $part);
         $tag_content = $tag_parts[0];
-        
+
         if(!empty($tag_content)) {
             $name = $this->findName($tag_content);
             $element = $this->toElement($tag_content, $part, $name);
@@ -107,7 +107,8 @@ class TinyHtmlMinifier {
 
     // Remove comments
     function removeComments($content = '') {
-        return preg_replace('/<!--(.|\s)*?-->/', '', $content);
+        $regexp = empty($this->options['preserve_conditional_comments']) ? '/<!--(.|\s)*?-->/' : '/<!--((?![\[]{1,1}).|\s)*?-->/';
+        return preg_replace($regexp, '', $content);
     }
 
     // Check if string contains string
@@ -209,13 +210,13 @@ class TinyHtmlMinifier {
         foreach($this->build as $build) {
 
             if(!empty($this->options['collapse_whitespace'])) {
-                
+
                 if(strlen(trim($build['content'])) == 0)
                     continue;
-                
+
                 elseif($build['type'] != 'content' && !in_array($build['name'], $this->elements['inline']))
                     trim($build['content']);
-                
+
             }
 
             $this->output .= $build['content'];

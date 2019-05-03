@@ -1,7 +1,7 @@
 {
     "name": "jenstornell/tiny-html-minifier",
     "description": "Minify HTML in PHP with just a single class",
-    "version": "2.1",
+    "version": "2.2",
     "type": "library",
     "license": "MIT",
     "authors": [

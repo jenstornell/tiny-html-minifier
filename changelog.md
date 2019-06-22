@@ -1,5 +1,12 @@
 # Changelog
 
+## 2.2
+
+- Removed experimental feature json-ld as it was too buggy.
+- Added option to disable comments.
+- Changed regex for removing comments due to reported buggy sometimes. Thanks to [@MuetzeOfficial](https://github.com/MuetzeOfficial) for the suggested fix.
+- Added fix for whitespace before doctype. Thanks to [@alpipego](https://github.com/alpipego) for the fix.
+
 ## 2.1
 
 - Added experimental feature support for minify `<script type="json-ld"></script>`.

@@ -51,7 +51,9 @@ class TinyHtmlMinifier {
 
     // Run minifier
     function minify($html) {
-        $html = $this->removeComments($html);
+        if(!isset($this->options['disable_comments']) || !$this->options['disable_comments'] ) {
+            $html = $this->removeComments($html);
+        }
         
         $rest = $html;
 
@@ -107,7 +109,7 @@ class TinyHtmlMinifier {
 
     // Remove comments
     function removeComments($content = '') {
-        return preg_replace('/<!--(.|\s)*?-->/', '', $content);
+        return preg_replace('/(?=<!--)([\s\S]*?)-->/', '', $content);
     }
 
     // Check if string contains string
@@ -153,11 +155,14 @@ class TinyHtmlMinifier {
         if($this->skip == 0) {
             $element = preg_replace('/\s+/', ' ', $element);
         }
-        return $element;
+        return trim($element);
     }
 
     // Add chevrons around element
     function addChevrons($element, $noll) {
+        if (empty($element)) {
+            return $element;
+        }
         $char = ($this->contains('>', $noll)) ? '>' : '';
         $element = '<' . $element . $char;
         return $element;
@@ -179,12 +184,7 @@ class TinyHtmlMinifier {
             $content = preg_replace('/\s+/', ' ', $content);
         }
 
-        if(
-            $this->isSchema($name, $element) &&
-            !empty($this->options['collapse_json_ld'])
-            ) {
-            return json_encode(json_decode($content));
-        } if(in_array($name, $this->elements['skip'])) {
+        if(in_array($name, $this->elements['skip'])) {
             return $content;
         } elseif(
             in_array($name, $this->elements['hard']) ||
@@ -194,14 +194,6 @@ class TinyHtmlMinifier {
         } else {
             return $this->minifyKeepSpaces($content);
         }
-    }
-
-    function isSchema($name, $element) {
-        if($name != 'script') return false;
-
-        $element = strtolower($element);
-        if($this->contains('application/ld+json', $element)) return true;
-        return false;
     }
 
     // Build html

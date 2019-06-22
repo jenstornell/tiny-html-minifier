@@ -1,6 +1,6 @@
 # Tiny Html Minifier
 
-![Version 2.0](https://img.shields.io/badge/version-2.0-blue.svg) ![MIT license](https://img.shields.io/badge/license-MIT-green.svg) [![Donate](https://img.shields.io/badge/give-donation-yellow.svg)](https://www.paypal.me/DevoneraAB)
+![Version 2.2](https://img.shields.io/badge/version-2.2-blue.svg) ![MIT license](https://img.shields.io/badge/license-MIT-green.svg) [![Donate](https://img.shields.io/badge/give-donation-yellow.svg)](https://www.paypal.me/DevoneraAB)
 
 [Changelog](changelog.md)
 
@@ -105,7 +105,7 @@ echo TinyMinify::html($html);
 require 'tiny-html-minifier.php';
 echo TinyMinify::html($html, $options = [
     'collapse_whitespace' => false,
-    'collapse_json_lt' => false, // WARNING - EXPERIMENTAL FEATURE
+    'disable_comments' => false,
 ]);
 ```
 
@@ -126,14 +126,6 @@ Spaces are collapsed. The text inside the element is still untouched. Set this v
 ```html
 <ul><li><a href="#">My link</a></li><li><a href="#">My link</a></li></ul>
 ```
-
-### collapse_json_lt
-
-***This is an experimental feature that could break your site!***
-
-If you use [schema.org](http://schema.org) in json-ld format, the script tag will look like this: `<script type="application/ld+json"></script>`.
-
-While it may work in many cases, it will break if `<` or `>` is present in the json data.
 
 ## Requirements
 

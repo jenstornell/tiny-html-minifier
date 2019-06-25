@@ -1,5 +1,9 @@
 <?php
 
+// TODO: use namespace:
+// namespace Minifier;
+// use Minifier\TinyHtmlMinifier;
+
 require 'TinyHtmlMinifier.php';
 
 class TinyMinify

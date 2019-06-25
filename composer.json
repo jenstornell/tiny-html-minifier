@@ -18,6 +18,8 @@
     "require": {},
     "require-dev": {},
     "autoload": {
-        "classmap": ["tiny-html-minifier.php"]
+        "psr-4": {
+            "Minifier\\": "src/"
+        }
     }
 }

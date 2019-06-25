@@ -1,6 +1,11 @@
 {
     "name": "jenstornell/tiny-html-minifier",
     "description": "Minify HTML in PHP with just a single class",
+    "keywords": [
+        "minifier",
+        "minify",
+        "html"
+    ],
     "version": "2.2",
     "type": "library",
     "license": "MIT",
@@ -10,6 +15,8 @@
             "email": "webblayout@gmail.com"
         }
     ],
+    "require": {},
+    "require-dev": {},
     "autoload": {
         "classmap": ["tiny-html-minifier.php"]
     }

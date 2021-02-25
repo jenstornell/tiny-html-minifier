@@ -79,7 +79,7 @@ class TinyHtmlMinifier
             $rest = (isset($parts[1])) ? $parts[1] : '';
         }
 
-        return $this->output;
+        return utf8_encode($this->output);
     }
 
     // Walk trough html

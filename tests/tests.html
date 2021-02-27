@@ -66,6 +66,10 @@
     <script>
         console.log('Script tags are not minified');
         console.log('This is inside a script tag');
+        // Test greater than sign not stripped from scripts
+        if (1 > 2) {
+          console.log('This should not happen!');
+        }
     </script>
 
 </body>

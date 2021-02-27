@@ -82,10 +82,10 @@ class TinyHtmlMinifier
         return $this->output;
     }
 
-    // Walk trough html
+    // Walk through html
     private function walk(&$part)
     {
-        $tag_parts = explode('>', $part);
+        $tag_parts = explode('>', $part, 2);  // Limit of 2 parts to prevent issues with '>' in content (eg. JS comparison)
         $tag_content = $tag_parts[0];
 
         if (!empty($tag_content)) {

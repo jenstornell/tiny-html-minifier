@@ -13,4 +13,9 @@ class TinyMinify
         $minifier = new TinyHtmlMinifier($options);
         return $minifier->minify($html);
     }
+    public static function minifyCurrentFile(){
+        ob_start(function($buffer){
+            return TinyMinify::html($buffer);
+         });
+    }
 }

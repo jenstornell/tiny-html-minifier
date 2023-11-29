@@ -71,7 +71,7 @@ class TinyHtmlMinifier
             $html = $this->removeComments($html);
         }
 
-        $rest = $html;
+        $rest = $this->replaceJSPlaceholders($html);
 
         while (!empty($rest)) {
             $parts = explode('<', $rest, 2);
@@ -79,7 +79,7 @@ class TinyHtmlMinifier
             $rest = (isset($parts[1])) ? $parts[1] : '';
         }
 
-        return $this->output;
+        return $this->restoreJSPlaceholders($this->output);
     }
 
     // Walk trough html
@@ -282,5 +282,24 @@ class TinyHtmlMinifier
     private function minifyKeepSpaces($element)
     {
         return preg_replace('!\s+!', ' ', $element);
+    }
+
+    // Change opening and closing tags to placeholder in script tags
+    private function replaceJSPlaceholders($string)
+    {
+        $pattern = '/<script\b[^>]*>(.*?)<\/script>/s';
+        $string = preg_replace_callback($pattern, function($matches) {
+            $content = str_replace('<', '__OPEN_TAG__', $matches[1]);
+            $content = str_replace('>', '__CLOSE_TAG__', $content);
+            return "<script>{$content}</script>";
+        }, $string);
+
+        return $string;
+    }
+
+    // Restore / revert opening and closing tags in script tags
+    private function restoreJSPlaceholders($string)
+    {
+        return str_replace(array('__OPEN_TAG__', '__CLOSE_TAG__'), array('<', '>'), $string);
     }
 }

@@ -285,17 +285,18 @@ class TinyHtmlMinifier
     }
 
     // Change opening and closing tags to placeholder in script tags
-    private function replaceJSPlaceholders($string)
-    {
-        $pattern = '/<script\b[^>]*>(.*?)<\/script>/s';
-        $string = preg_replace_callback($pattern, function($matches) {
-            $content = str_replace('<', '__OPEN_TAG__', $matches[1]);
-            $content = str_replace('>', '__CLOSE_TAG__', $content);
-            return "<script>{$content}</script>";
-        }, $string);
+    function replaceJSPlaceholders($string)
+{
+    $pattern = '/<script\b([^>]*)>(.*?)<\/script>/s';
+    $string = preg_replace_callback($pattern, function($matches) {
+        $attributes = $matches[1];
+        $content = str_replace('<', '__OPEN_TAG__', $matches[2]);
+        $content = str_replace('>', '__CLOSE_TAG__', $content);
+        return "<script{$attributes}>{$content}</script>";
+    }, $string);
 
-        return $string;
-    }
+    return $string;
+}
 
     // Restore / revert opening and closing tags in script tags
     private function restoreJSPlaceholders($string)
